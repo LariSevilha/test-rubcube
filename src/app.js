@@ -1,4 +1,4 @@
-require("dotenv").config();
+require("dotenv").config({ quiet: true });
 
 const express = require("express");
 const cors = require("cors");
@@ -17,7 +17,7 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
-// Log de TODAS chamadas (antes das rotas)
+// Log de TODAS as chamadas (terminal + banco)
 app.use(loggingMiddleware);
 
 app.get("/health", (req, res) => res.json({ status: "ok" }));
@@ -27,10 +27,12 @@ app.use("/users", usersRoutes);
 app.use("/countries", countriesRoutes);
 app.use("/logs", logsRoutes);
 
-// Handler de erro simples
+// Handler de erro simples e limpo
 app.use((err, req, res, next) => {
-  console.error(err);
-  res.status(err.statusCode || 500).json({ message: err.message || "Internal error" });
+  console.error("❌ Error:", err.message || err);
+  res.status(err.statusCode || 500).json({
+    message: err.message || "Internal error",
+  });
 });
 
 module.exports = app;

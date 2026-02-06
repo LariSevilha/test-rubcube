@@ -1,4 +1,4 @@
-require("dotenv").config({ override: true });
+require("dotenv").config({ override: true, quiet: true });
 
 const { PrismaClient } = require("@prisma/client");
 const { PrismaBetterSqlite3 } = require("@prisma/adapter-better-sqlite3");

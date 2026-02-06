@@ -1,10 +1,21 @@
 const prisma = require("../prisma");
 const jwt = require("jsonwebtoken");
 
+// Ajuda a ter timestamps bonitos
+function nowISO() {
+  return new Date().toISOString();
+}
+
+// Evita log gigante (ex: query muito grande)
+function shortPath(path, max = 120) {
+  if (!path) return "";
+  return path.length > max ? path.slice(0, max - 3) + "..." : path;
+}
+
 module.exports = function loggingMiddleware(req, res, next) {
   const start = Date.now();
 
-  // tenta extrair userId do token (se houver)
+  // Tenta pegar userId do JWT (se existir)
   let userId = null;
   const header = req.headers.authorization || "";
   const token = header.startsWith("Bearer ") ? header.slice(7) : null;
@@ -14,13 +25,20 @@ module.exports = function loggingMiddleware(req, res, next) {
       const payload = jwt.verify(token, process.env.JWT_SECRET);
       userId = payload.sub;
     } catch {
-      // token inválido: não interrompe request, só loga sem userId
+      // token inválido: segue request normalmente, só não seta userId
     }
   }
 
   res.on("finish", async () => {
+    const durationMs = Date.now() - start;
+    const path = shortPath(req.originalUrl);
+
+    // ✅ Log BONITO no terminal
+    const who = userId ? `user=${userId}` : "user=anonymous";
+    console.log(`${nowISO()} ➡️  ${req.method} ${path} ${res.statusCode} (${durationMs}ms) ${who}`);
+
+    // ✅ Log no banco (não derruba app se falhar)
     try {
-      const durationMs = Date.now() - start;
       await prisma.apiLog.create({
         data: {
           userId,
@@ -33,8 +51,7 @@ module.exports = function loggingMiddleware(req, res, next) {
         },
       });
     } catch (e) {
-      // não quebra app se log falhar
-      console.error("Log error:", e.message);
+      console.error(`${nowISO()} ⚠️  Log DB error:`, e.message);
     }
   });
 
