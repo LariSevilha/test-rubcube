@@ -1,4 +1,3 @@
-cat > README.md << 'EOF'
 # 🚀 Backend Test API
 
 API REST desenvolvida em Node.js com autenticação JWT, integração com API pública, filtros, paginação, logs e testes automatizados.
@@ -344,4 +343,3 @@ Este projeto foi desenvolvido com foco em:
 - [x] README completo
 
 ---
- EOF
