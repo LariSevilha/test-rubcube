@@ -2,11 +2,29 @@ const router = require("express").Router();
 const prisma = require("../prisma");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { loginLimiter } = require("../middlewares/rateLimit");
+const { z } = require("zod");
+const { validate } = require("../middlewares/validate");
 
-router.post("/register", async (req, res, next) => {
-  try {
-    const { name, email, password } = req.body || {};
-    if (!name || !email || !password) return res.status(400).json({ message: "name, email, password required" });
+const registerSchema = z.object({
+    body: z.object({
+      name: z.string().min(2),
+      email: z.string().email(),
+      password: z.string().min(6),
+    }),
+  });
+  
+  const loginSchema = z.object({
+    body: z.object({
+      email: z.string().email(),
+      password: z.string().min(1),
+    }),
+  });
+
+router.post("/register", validate(registerSchema), async (req, res, next) => {
+   try {
+    const { name, email, password } = req.body;
+     if (!name || !email || !password) return res.status(400).json({ message: "name, email, password required" });
 
     const exists = await prisma.user.findUnique({ where: { email } });
     if (exists) return res.status(409).json({ message: "Email already in use" });
@@ -28,9 +46,9 @@ router.post("/register", async (req, res, next) => {
   }
 });
 
-router.post("/login", async (req, res, next) => {
+router.post("/login", loginLimiter, async (req, res, next) => {
   try {
-    const { email, password } = req.body || {};
+    const { email, password } = req.body;
     if (!email || !password) return res.status(400).json({ message: "email, password required" });
 
     const user = await prisma.user.findUnique({ where: { email } });

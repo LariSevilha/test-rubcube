@@ -8,7 +8,8 @@
     "test": "jest --runInBand",
     "prisma:migrate": "prisma migrate dev",
     "prisma:generate": "prisma generate",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "db:reset": "node scripts/reset-db.js"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.3.0",
@@ -19,8 +20,10 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.4",
     "express": "^4.19.2",
+    "express-rate-limit": "^8.2.1",
     "helmet": "^7.1.0",
-    "jsonwebtoken": "^9.0.2"
+    "jsonwebtoken": "^9.0.2",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "jest": "^29.7.0",

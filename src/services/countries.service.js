@@ -1,9 +1,19 @@
+// src/services/countries.service.js
 const axios = require("axios");
+const { createTTLCache } = require("./cache");
+
+const countriesCache = createTTLCache(15 * 60 * 1000); // 15 min
 
 async function fetchAllCountries() {
-  // Campos pra reduzir payload
-  const url = "https://restcountries.com/v3.1/all?fields=name,cca2,cca3,region,subregion,population,capital,currencies,languages";
+  const cached = countriesCache.get();
+  if (cached) return cached;
+
+  const url =
+    "https://restcountries.com/v3.1/all?fields=name,cca2,cca3,region,subregion,population,capital,currencies,languages";
+
   const { data } = await axios.get(url, { timeout: 10000 });
+
+  countriesCache.set(data);
   return data;
 }
 
@@ -29,27 +39,27 @@ function applyFilters(items, q) {
 
   if (q.name) {
     const n = String(q.name).toLowerCase();
-    out = out.filter(x => (x.name || "").toLowerCase().includes(n));
+    out = out.filter((x) => (x.name || "").toLowerCase().includes(n));
   }
   if (q.region) {
     const r = String(q.region).toLowerCase();
-    out = out.filter(x => (x.region || "").toLowerCase() === r);
+    out = out.filter((x) => (x.region || "").toLowerCase() === r);
   }
   if (q.currency) {
     const cur = String(q.currency).toUpperCase();
-    out = out.filter(x => x.currencies.includes(cur));
+    out = out.filter((x) => x.currencies.includes(cur));
   }
   if (q.language) {
     const lang = String(q.language).toLowerCase();
-    out = out.filter(x => x.languages.map(l => l.toLowerCase()).includes(lang));
+    out = out.filter((x) => x.languages.map((l) => l.toLowerCase()).includes(lang));
   }
   if (q.minPopulation) {
     const minP = parseInt(q.minPopulation, 10);
-    if (Number.isFinite(minP)) out = out.filter(x => x.population >= minP);
+    if (Number.isFinite(minP)) out = out.filter((x) => x.population >= minP);
   }
   if (q.maxPopulation) {
     const maxP = parseInt(q.maxPopulation, 10);
-    if (Number.isFinite(maxP)) out = out.filter(x => x.population <= maxP);
+    if (Number.isFinite(maxP)) out = out.filter((x) => x.population <= maxP);
   }
 
   return out;
