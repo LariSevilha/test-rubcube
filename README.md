@@ -1,66 +1,112 @@
-🚀 Backend Test API
+cat > README.md << 'EOF'
+# 🚀 Backend Test API
+
 API REST desenvolvida em Node.js com autenticação JWT, integração com API pública, filtros, paginação, logs e testes automatizados.
-Este projeto foi construído com foco em boas práticas, clareza, segurança e experiência do desenvolvedor (DX).
 
-📦 Stack Utilizada
+Este projeto foi construído com foco em **boas práticas**, **clareza**, **segurança** e **experiência do desenvolvedor (DX)**.
 
-Node.js + Express
-Prisma ORM
-SQLite (ambiente de desenvolvimento)
-JWT (jsonwebtoken)
-Zod (validação de dados)
-Jest + Supertest (testes)
-Axios
-Helmet + CORS
-jq + curl (DX / testes manuais)
+---
 
+## 📦 Stack Utilizada
 
-🔗 Integração com API Pública
-Este projeto integra com a Rest Countries API, consumindo dados de países e disponibilizando endpoints estruturados com:
+- **Node.js** + **Express**
+- **Prisma ORM**
+- **SQLite** (ambiente de desenvolvimento)
+- **JWT** (jsonwebtoken)
+- **Zod** (validação de dados)
+- **Jest** + **Supertest** (testes)
+- **Axios**
+- **Helmet** + **CORS**
+- **jq** + **curl** (DX / testes manuais)
 
-✅ Normalização dos dados
-✅ Filtros avançados
-✅ Paginação
-✅ Cache em memória (TTL)
+---
 
+## 🔗 Integração com API Pública
 
-🔒 Todos os endpoints de países são protegidos por autenticação JWT.
+Este projeto integra com a **[Rest Countries API](https://restcountries.com/)**, consumindo dados de países e disponibilizando endpoints estruturados com:
 
+- ✅ Normalização dos dados
+- ✅ Filtros avançados
+- ✅ Paginação
+- ✅ Cache em memória (TTL)
 
-🔐 Autenticação (JWT)
-Funcionalidades
+> 🔒 Todos os endpoints de países são **protegidos por autenticação JWT**.
 
-✅ Registro de usuário
-✅ Login
-✅ Proteção de rotas
-✅ Controle de acesso por role (USER / ADMIN)
-✅ Rate limit no login (proteção contra brute force)
+---
 
-Endpoints
-httpPOST /auth/register
+## 🔐 Autenticação (JWT)
+
+### Funcionalidades
+
+- ✅ Registro de usuário
+- ✅ Login
+- ✅ Proteção de rotas
+- ✅ Controle de acesso por role (\`USER\` / \`ADMIN\`)
+- ✅ Rate limit no login (proteção contra brute force)
+
+### Endpoints
+
+\`\`\`http
+POST /auth/register
 POST /auth/login
-Exemplo de login
-bashcurl -X POST http://localhost:3000/auth/login \
-  -H "Content-Type: application/json" \
+\`\`\`
+
+### Exemplo de login
+
+\`\`\`bash
+curl -X POST http://localhost:3000/auth/login \\
+  -H "Content-Type: application/json" \\
   -d '{"email":"teste@mail.com","password":"123456"}'
-Resposta:
-json{
+\`\`\`
+
+**Resposta:**
+
+\`\`\`json
+{
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
 }
+\`\`\`
 
-🌍 Countries (API Pública Integrada)
-Endpoints
-httpGET /countries
+---
+
+## 🌍 Countries (API Pública Integrada)
+
+### Endpoints
+
+\`\`\`http
+GET /countries
 GET /countries/:code
-Filtros disponíveis
-FiltroDescriçãonameBusca por nome do paísregionFiltrar por regiãocurrencyFiltrar por moedalanguageFiltrar por idiomaminPopulationPopulação mínimamaxPopulationPopulação máxima
-Paginação
-ParâmetroDescriçãopageNúmero da páginalimitItens por página
-Exemplo de uso
-bashcurl -X GET "http://localhost:3000/countries?page=1&limit=5&region=Americas" \
+\`\`\`
+
+### Filtros disponíveis
+
+| Filtro          | Descrição                        |
+|-----------------|----------------------------------|
+| \`name\`          | Busca por nome do país           |
+| \`region\`        | Filtrar por região               |
+| \`currency\`      | Filtrar por moeda                |
+| \`language\`      | Filtrar por idioma               |
+| \`minPopulation\` | População mínima                 |
+| \`maxPopulation\` | População máxima                 |
+
+### Paginação
+
+| Parâmetro | Descrição              |
+|-----------|------------------------|
+| \`page\`    | Número da página       |
+| \`limit\`   | Itens por página       |
+
+### Exemplo de uso
+
+\`\`\`bash
+curl -X GET "http://localhost:3000/countries?page=1&limit=5&region=Americas" \\
   -H "Authorization: Bearer SEU_TOKEN" | jq
-Resposta:
-json{
+\`\`\`
+
+**Resposta:**
+
+\`\`\`json
+{
   "page": 1,
   "limit": 5,
   "total": 250,
@@ -73,145 +119,229 @@ json{
     }
   ]
 }
+\`\`\`
 
-👥 Gerenciamento de Usuários
-Funcionalidades
+---
 
-✅ Criar usuário (ADMIN)
-✅ Editar usuário (ADMIN ou próprio)
-✅ Deletar usuário (ADMIN ou próprio)
-✅ Listar um usuário
-✅ Listar usuários com filtros e paginação
+## 👥 Gerenciamento de Usuários
 
-Endpoint base
-http/users
-Filtros (ADMIN)
+### Funcionalidades
 
-name
-email
-role
+- ✅ Criar usuário (ADMIN)
+- ✅ Editar usuário (ADMIN ou próprio)
+- ✅ Deletar usuário (ADMIN ou próprio)
+- ✅ Listar um usuário
+- ✅ Listar usuários com filtros e paginação
 
+### Endpoint base
 
-📜 Logs de Requisições
+\`\`\`http
+/users
+\`\`\`
+
+### Filtros (ADMIN)
+
+- \`name\`
+- \`email\`
+- \`role\`
+
+---
+
+## 📜 Logs de Requisições
+
 Todas as chamadas à API são registradas automaticamente.
-Informações registradas
 
-Usuário (se autenticado)
-Endpoint
-Método HTTP
-Status code
-IP
-User-Agent
-Tempo de resposta
-Data/hora
+### Informações registradas
 
-Endpoint
-httpGET /logs
+- Usuário (se autenticado)
+- Endpoint
+- Método HTTP
+- Status code
+- IP
+- User-Agent
+- Tempo de resposta
+- Data/hora
 
-🔒 Apenas ADMIN
+### Endpoint
 
-Filtros disponíveis
+\`\`\`http
+GET /logs
+\`\`\`
 
-userId
-endpoint
-method
-from / to (data)
-page / limit
+> 🔒 **Apenas ADMIN**
 
+### Filtros disponíveis
 
-⚡ Cache (Performance)
+- \`userId\`
+- \`endpoint\`
+- \`method\`
+- \`from\` / \`to\` (data)
+- \`page\` / \`limit\`
 
-Cache em memória com TTL de 15 minutos para a API de países
-Evita chamadas repetidas à API pública
-Reduz latência e consumo externo
+---
 
+## ⚡ Cache (Performance)
 
-🧪 Testes Automatizados
+- Cache em memória com **TTL de 15 minutos** para a API de países
+- Evita chamadas repetidas à API pública
+- Reduz latência e consumo externo
 
-✅ Testes de autenticação
-✅ Testes de listagem de países
-✅ Testes de controle de acesso
-✅ Testes de logs
-✅ Testes de usuários
+---
 
-Rodar testes
-bashnpm test
+## 🧪 Testes Automatizados
 
-🛠️ Comandos do Projeto
-Instalar dependências
-bashnpm install
-Rodar em desenvolvimento
-bashnpm run dev
-Rodar em produção
-bashnpm start
+- ✅ Testes de autenticação
+- ✅ Testes de listagem de países
+- ✅ Testes de controle de acesso
+- ✅ Testes de logs
+- ✅ Testes de usuários
 
-🗄️ Prisma / Banco de Dados
-Gerar client
-bashnpx prisma generate
-Criar / atualizar banco (sem migrations)
-bashnpx prisma db push
-Abrir Prisma Studio
-bashnpx prisma studio
+### Rodar testes
 
-🔄 Resetar Banco de Dados (DEV)
-Script de reset
-bashnode scripts/reset-db.js
+\`\`\`bash
+npm test
+\`\`\`
+
+---
+
+## 🛠️ Comandos do Projeto
+
+### Instalar dependências
+
+\`\`\`bash
+npm install
+\`\`\`
+
+### Rodar em desenvolvimento
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+### Rodar em produção
+
+\`\`\`bash
+npm start
+\`\`\`
+
+---
+
+## 🗄️ Prisma / Banco de Dados
+
+### Gerar client
+
+\`\`\`bash
+npx prisma generate
+\`\`\`
+
+### Criar / atualizar banco (sem migrations)
+
+\`\`\`bash
+npx prisma db push
+\`\`\`
+
+### Abrir Prisma Studio
+
+\`\`\`bash
+npx prisma studio
+\`\`\`
+
+---
+
+## 🔄 Resetar Banco de Dados (DEV)
+
+### Script de reset
+
+\`\`\`bash
+node scripts/reset-db.js
+\`\`\`
+
 Ou via npm (se configurado):
-bashnpm run db:reset
-Esse script:
 
-Limpa todas as tabelas
-Mantém o schema
-Ideal para testes locais
+\`\`\`bash
+npm run db:reset
+\`\`\`
 
+**Esse script:**
 
-🧑‍💻 DX — cURL Legivel no Terminal
-Alias personalizado (curljson)
-Adicione no ~/.zshrc ou ~/.bashrc:
-bashcurljson() {
+- Limpa todas as tabelas
+- Mantém o schema
+- Ideal para testes locais
+
+---
+
+## 🧑‍💻 DX — cURL Legivel no Terminal
+
+### Alias personalizado (\`curljson\`)
+
+Adicione no \`~/.zshrc\` ou \`~/.bashrc\`:
+
+\`\`\`bash
+curljson() {
   local tmp
   tmp=$(mktemp)
-  curl -sS -o "$tmp" \
-    -w "Status: %{http_code}\nTime: %{time_total}s\n" \
+  curl -sS -o "$tmp" \\
+    -w "Status: %{http_code}\\nTime: %{time_total}s\\n" \\
     "$@"
   echo "-----------------------------"
   jq . "$tmp"
   rm -f "$tmp"
 }
+\`\`\`
+
 Recarregue:
-bashsource ~/.zshrc
-Uso
-bashcurljson "http://localhost:3000/health"
+
+\`\`\`bash
+source ~/.zshrc
+\`\`\`
+
+### Uso
+
+\`\`\`bash
+curljson "http://localhost:3000/health"
+\`\`\`
+
 Ou com autenticação:
-bashcurljson "http://localhost:3000/countries?page=1&limit=2" \
+
+\`\`\`bash
+curljson "http://localhost:3000/countries?page=1&limit=2" \\
   -H "Authorization: Bearer SEU_TOKEN"
+\`\`\`
 
-🔐 Segurança Aplicada
+---
 
-✅ JWT com expiração
-✅ Rate limit no login
-✅ Validação de entrada com Zod
-✅ Helmet + CORS
-✅ Controle de acesso por role
-✅ Logs auditáveis
+## 🔐 Segurança Aplicada
 
+- ✅ JWT com expiração
+- ✅ Rate limit no login
+- ✅ Validação de entrada com Zod
+- ✅ Helmet + CORS
+- ✅ Controle de acesso por role
+- ✅ Logs auditáveis
 
-🧠 Observações Finais
+---
+
+## 🧠 Observações Finais
+
 Este projeto foi desenvolvido com foco em:
 
-Organização
-Escalabilidade
-Clareza de código
-Boas práticas reais de backend
-Entrega acima do mínimo solicitado no desafio
+- **Organização**
+- **Escalabilidade**
+- **Clareza de código**
+- **Boas práticas reais de backend**
+- **Entrega acima do mínimo solicitado no desafio**
 
+---
 
-✅ Checklist do Desafio
+## ✅ Checklist do Desafio
 
- Integração com API pública
- Autenticação JWT
- Listagem com filtros e paginação
- CRUD de usuários
- Logs com filtros
- Testes automatizados
- README completo
+- [x] Integração com API pública
+- [x] Autenticação JWT
+- [x] Listagem com filtros e paginação
+- [x] CRUD de usuários
+- [x] Logs com filtros
+- [x] Testes automatizados
+- [x] README completo
+
+---
+ EOF
